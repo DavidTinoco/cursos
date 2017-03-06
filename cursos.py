@@ -17,8 +17,15 @@ for c in raiz.xpath("//duracion"):
 
 pausa = raw_input("Pulse intro para continuar")
 
-print len(raiz.xpath("cursos/curso"))
+categorias = []
 
+for c in raiz.xpath("//categoria"):
+    categorias.append(c.text)
+
+for c in set(categorias):
+    cat = "count(//categoria[.=\"" + c + "\"])"
+    n = raiz.xpath(cat)
+    print "La categoría " + c.encode("utf-8") + " tiene " + str(int(n)) + " cursos"
 
 #3
 
@@ -36,11 +43,12 @@ if not existe:
 
 #4
 
-curso = unicode(raw_input("De qué curso desea saber sus teléfonos?: "))
+curso =raw_input("De qué curso desea saber sus teléfonos?: ")
 
 existe = False
 for c in raiz.xpath("//nombre"):
-    if c.text == curso:
+    if c.text.encode("utf-8") == curso:
+        existe = True
         print c.getparent().find("telefonos").text
 
 if not existe:
@@ -49,12 +57,26 @@ if not existe:
 #5
 
 categoria = raw_input("Escoja la categoría del curso que desea: ")
+nombre = "null"
+horario = "null"
+url = "null"
+
 
 existe = False
 for c in raiz.xpath("//categoria"):
-    if c.text == categoria:
+    if c.text.encode("utf-8") == categoria:
         existe = True
-        print "El curso " + c.getparent().getparent().find("nombre").text + " tiene un horario de " + c.getparent().getparent().find("horario").text + " y su página web es: " + c.getparent().getparent().find("url").text
+        if c.getparent().getparent().find("nombre").text != None:
+            nombre = c.getparent().getparent().find("nombre").text.encode("utf-8")
+            
+        if c.getparent().getparent().find("horario").text != None:
+            horario = c.getparent().getparent().find("horario").text.encode("utf-8")
+
+        if c.getparent().getparent().find("url").text != None:
+            url = c.getparent().getparent().find("url").text.encode("utf-8")
+            
+        print "El curso " + nombre + " tiene un horario de " + horario + " y su página web es: " + url
+        print
 
 if not existe:
     print "No existe dicha categoría"        
